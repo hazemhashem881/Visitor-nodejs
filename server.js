@@ -13,7 +13,7 @@ app.use((req, res, next) => {
 });
 
 app.get('/', (req, res) => {
-    res.send('Hello');
+    res.send('Welcome agian');
 });
 
 // Endpoint to get the number of visitors
