@@ -5,7 +5,7 @@ pipeline {
             steps {
                 script {
                     sh "sed -i 's/latest/${BUILD_NUMBER}/' kaniko.yaml"
-                    sh "kubectl apply -f kaniko.yml"
+                    sh "kubectl apply -f kaniko.yaml"
                 }
             }
         }
