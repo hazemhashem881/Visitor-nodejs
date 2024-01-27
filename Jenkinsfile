@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Snyk Scan') {
+        stage('Snyk Open Source Scan') {
             steps {
                 echo 'Testing'
                 snykSecurity(
@@ -14,7 +14,7 @@ pipeline {
                 )
             }
         }
-        stage('Snyk CODE Scan') {
+        stage('Snyk Code Scan') {
             steps {
                 snykSecurity(
                     snykInstallation: 'snyk@latest',
@@ -25,5 +25,20 @@ pipeline {
                 )
             }
         }
+        stage('Build image'){
+            steps{
+             sh "docker build -t hazemhashem100/visitor:${BUILD_NUMBER} ."
+            }
+        }
+        stage('Push image ') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                    sh 'docker login -u ${USERNAME} -p ${PASSWORD}'
+                    sh "docker push hazemhashem100/visitor:${BUILD_NUMBER}"
+                }
+                
+            }
+        }
+        
     }
 }
