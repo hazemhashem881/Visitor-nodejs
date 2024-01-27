@@ -14,10 +14,10 @@ pipeline {
                     // Authenticate with Docker Hub
                     docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
                         // Build Docker image
-                        def customImage = docker.build(IMAGE_TAG, '-f Dockerfile .')
+                        docker.build(IMAGE_TAG, '-f Dockerfile .')
 
                         // Push Docker image to Docker Hub
-                        customImage.push()
+                        docker.image(IMAGE_TAG).push()
                     }
                 }
             }
