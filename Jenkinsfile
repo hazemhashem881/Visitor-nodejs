@@ -1,10 +1,14 @@
 pipeline {
     agent any
     stages {
-         stage('Build & Push image'){
-             sh "sed -i 's/latest/${BUILD_NUMBER}/' kaniko.yaml "
-            sh "kubectl apply -f kaniko.yaml"
-         }
+        stage('Build & Push image') {
+            steps {
+                script {
+                    sh "sed -i 's/latest/${BUILD_NUMBER}/' kaniko.yaml"
+                    sh "kubectl apply -f kaniko.yml"
+                }
+            }
+        }
         stage('Snyk Open Source Scan') {
             steps {
                 echo 'Testing'
