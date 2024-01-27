@@ -3,7 +3,7 @@ pipeline {
     stages {
          stage('Build & Push image'){
              sh "sed -i 's/latest/${BUILD_NUMBER}/' kaniko.yaml "
-             kubectl apply -f kaniko.yml
+            sh "kubectl apply -f kaniko.yaml"
          }
         stage('Snyk Open Source Scan') {
             steps {
