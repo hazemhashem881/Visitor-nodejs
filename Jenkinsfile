@@ -9,7 +9,7 @@ pipeline {
                     snykInstallation: 'snyk@latest',
                     snykTokenId: 'snyk-api-toke',
                     failOnIssues: false,
-                    monitorprojectOnBuild: true,
+                    monitorProjectOnBuild: true,
                     additionalArguments: '--all-projects --d'
                 )
             }
