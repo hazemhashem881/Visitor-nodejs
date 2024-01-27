@@ -21,7 +21,7 @@ pipeline {
                     snykTokenId: 'snyk-api-toke',
                     failOnIssues: false,
                     monitorProjectOnBuild: false,
-                    additionalArguments: '--code -d'
+                    additionalArguments: '--code -debug'
                 )
             }
         }
@@ -37,6 +37,18 @@ pipeline {
                     sh "docker push hazemhashem100/visitor:${BUILD_NUMBER}"
                 }
                 
+            }
+        }
+
+        stage('Snyk Container Scan') {
+            steps {
+                snykSecurity(
+                    snykInstallation: 'snyk@latest',
+                    snykTokenId: 'snyk-api-toke',
+                    failOnIssues: false,
+                    monitorProjectOnBuild: true,
+                    additionalArguments: '--container debian -debug'
+                )
             }
         }
         
