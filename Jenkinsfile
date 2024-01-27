@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
         stage('Snyk Scan') {
             steps {
                 script {
