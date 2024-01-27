@@ -1,25 +1,31 @@
 pipeline {
     agent any
-
-    environment {
-        DOCKER_IMAGE = 'hazemhashem100/visitor'
-        IMAGE_TAG = "${DOCKER_IMAGE}:${BUILD_NUMBER}"
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-    }
-
     stages {
-        stage('Build and Push Docker Image') {
+         stage('Build & Push image'){
+             sh "sed -i 's/latest/${BUILD_NUMBER}/' kaniko.yaml "
+             kubectl apply -f kaniko.yml
+         }
+        stage('Snyk Open Source Scan') {
             steps {
-                script {
-                    // Authenticate with Docker Hub
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
-                        // Build Docker image
-                        docker.build(IMAGE_TAG, '-f Dockerfile .')
-
-                        // Push Docker image to Docker Hub
-                        docker.image(IMAGE_TAG).push()
-                    }
-                }
+                echo 'Testing'
+                snykSecurity(
+                    snykInstallation: 'snyk@latest',
+                    snykTokenId: 'snyk-api-toke',
+                    failOnIssues: false,
+                    monitorProjectOnBuild: true,
+                    additionalArguments: '--all-projects --d'
+                )
+            }
+        }
+        stage('Snyk Code Scan') {
+            steps {
+                snykSecurity(
+                    snykInstallation: 'snyk@latest',
+                    snykTokenId: 'snyk-api-toke',
+                    failOnIssues: false,
+                    monitorProjectOnBuild: false,
+                    additionalArguments: '--code -debug'
+                )
             }
         }
         stage('Snyk Container Scan') {
