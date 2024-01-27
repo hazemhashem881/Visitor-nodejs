@@ -1,24 +1,27 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = 'hazemhashem100/visitor'
+        IMAGE_TAG = "${DOCKER_IMAGE}:${BUILD_NUMBER}"
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+    }
 
     stages {
-    
-        stage('Build image'){
-            steps{
-             sh "docker build -t hazemhashem100/visitor:${BUILD_NUMBER} ."
-            }
-        }
-        stage('Push image ') {
+        stage('Build and Push Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                    sh 'docker login -u ${USERNAME} -p ${PASSWORD}'
-                    sh "docker push hazemhashem100/visitor:${BUILD_NUMBER}"
+                script {
+                    // Authenticate with Docker Hub
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
+                        // Build Docker image
+                        def customImage = docker.build(IMAGE_TAG, '-f Dockerfile .')
+
+                        // Push Docker image to Docker Hub
+                        customImage.push()
+                    }
                 }
-                
             }
         }
-
         stage('Snyk Container Scan') {
             steps {
                 snykSecurity(
