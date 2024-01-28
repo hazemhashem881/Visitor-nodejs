@@ -1,25 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kaniko-pod
+  name: kaniko-deployment
   namespace: jenkins
 spec:
-  containers:
-    - name: kaniko                                                     
-      image: gcr.io/kaniko-project/executor:v1.6.0-debug
-      imagePullPolicy: Always
-      args:
-        - "--context=git://github.com/hazemhashem881/Visitor-nodejs.git"
-        - "--destination=hazemhashem100/vistor:latest"
-        - "--dockerfile=Dockerfile"
-      volumeMounts:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kaniko
+  template:
+    metadata:
+      labels:
+        app: kaniko
+    spec:
+      containers:
+        - name: kaniko
+          image: gcr.io/kaniko-project/executor:v1.6.0-debug
+          imagePullPolicy: Always
+          args:
+            - "--context=git://github.com/hazemhashem881/Visitor-nodejs.git"
+            - "--destination=hazemhashem100/vistor:latest"
+            - "--dockerfile=Dockerfile"
+          volumeMounts:
+            - name: kaniko-secret
+              mountPath: /kaniko/.docker
+      volumes:
         - name: kaniko-secret
-          mountPath: /kaniko/.docker
-  volumes:
-    - name: kaniko-secret
-      secret:
-        secretName: regcred
-        items:
-          - key: .dockerconfigjson
-            path: config.json
-  restartPolicy: Never
+          secret:
+            secretName: regcred
+            items:
+              - key: .dockerconfigjson
+                path: config.json
