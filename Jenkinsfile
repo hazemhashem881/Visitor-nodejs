@@ -13,6 +13,15 @@ pipeline {
                 )
             }
         }
+        stage('Build & Push image') {
+            steps {
+                script {
+                    sh "sed -i 's/latest/${BUILD_NUMBER}/' kaniko.yaml"
+                    sh "kubectl apply -f kaniko.yaml"
+                }
+            }
+        }
+    
         stage('Snyk Code Scan') {
             steps {
                 snykSecurity(
@@ -25,14 +34,7 @@ pipeline {
             }
         }
 
-        stage('Build & Push image') {
-            steps {
-                script {
-                    sh "sed -i 's/latest/${BUILD_NUMBER}/' kaniko.yaml"
-                    sh "kubectl apply -f kaniko.yaml"
-                }
-            }
-        }
+
         stage('Snyk Container Scan') {
             steps {
                 snykSecurity(
