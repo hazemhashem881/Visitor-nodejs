@@ -1,14 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Build & Push image') {
-            steps {
-                script {
-                    sh "sed -i 's/latest/${BUILD_NUMBER}/' kaniko.yaml"
-                    sh "kubectl apply -f kaniko.yaml"
-                }
-            }
-        }
         stage('Snyk Open Source Scan') {
             steps {
                 echo 'Testing'
@@ -32,6 +24,15 @@ pipeline {
                 )
             }
         }
+
+        stage('Build & Push image') {
+            steps {
+                script {
+                    sh "sed -i 's/latest/${BUILD_NUMBER}/' kaniko.yaml"
+                    sh "kubectl apply -f kaniko.yaml"
+                }
+            }
+        }
         stage('Snyk Container Scan') {
             steps {
                 snykSecurity(
@@ -39,10 +40,17 @@ pipeline {
                     snykTokenId: 'snyk-api-toke',
                     failOnIssues: false,
                     monitorProjectOnBuild: true,
-                    additionalArguments: '--container hazemhashem100/vistor:3 -debug'
+                    additionalArguments: '--container hazemhashem100/vistor:${BUILD_NUMBER} -debug'
                 )
             }
         }
+
+        stage('CD') {
+            steps {
+                sh "sed -i 's/latest/${BUILD_NUMBER}/' appdeploy.yml "
+                sh "kubectl apply -f namespace.yml"
+                sh "kubectl apply -f appdeploy.yml"
+            }
         
     }
 }
