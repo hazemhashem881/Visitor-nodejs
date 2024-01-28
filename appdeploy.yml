@@ -9,7 +9,7 @@ spec:
   selector:
     app: web
   ports:
-  - port: 3000
+  - port: 80
     targetPort: 3000
    # nodePort: 30008
     protocol: TCP
