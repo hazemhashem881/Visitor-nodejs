@@ -51,6 +51,6 @@ pipeline {
                 sh "kubectl apply -f namespace.yml"
                 sh "kubectl apply -f appdeploy.yml"
             }
-        
+        }
     }
 }
