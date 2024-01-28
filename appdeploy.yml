@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  namespace: prod
+  
+  annotations: 
+     service.beta.kubernetes.io/aws-load-balancer-type: "alb"
+spec:
+  type: LoadBalancer
+  #type: NodePort
+  selector:
+    app: web
+  ports:
+  - port: 3000
+    targetPort: 3000
+   # nodePort: 30008
+    protocol: TCP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deploy
+  namespace: prod 
+spec: 
+  selector:
+    matchLabels:
+      app: vistor
+  template:
+    metadata:
+      labels:
+        app: vistor
+    spec:
+      containers:
+      - name: web-container
+        image: hazemhashem100/vistor:latest
+        ports:
+        - containerPort: 3000
