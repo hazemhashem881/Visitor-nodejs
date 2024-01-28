@@ -3,6 +3,7 @@ const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const HOST = '0.0.0.0';    
 let visitors = 0;
 
 // Middleware to count visitors
@@ -20,7 +21,5 @@ app.get('/', (req, res) => {
 app.get('/visitors', (req, res) => {
     res.json({ visitors: visitors });
 });
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT, HOST);
+console.log(`Running on http://${HOST}:${PORT}`);
