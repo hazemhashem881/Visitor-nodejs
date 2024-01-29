@@ -22,7 +22,31 @@ pipeline {
             }
         }
     
+        stage('Snyk Code Scan') {
+            steps {
+                snykSecurity(
+                    snykInstallation: 'snyk@latest',
+                    snykTokenId: 'snyk-api-toke',
+                    failOnIssues: false,
+                    monitorProjectOnBuild: false,
+                    additionalArguments: '--code -debug'
+                )
+            }
+        }
 
+
+        stage('Snyk Container Scan') {
+            steps {
+                snykSecurity(
+                    snykInstallation: 'snyk@latest',
+                    snykTokenId: 'snyk-api-toke',
+                    failOnIssues: false,
+                    monitorProjectOnBuild: true,
+                    additionalArguments: '--container hazemhashem100/vistor:${BUILD_NUMBER} -debug'
+                )
+            }
+        }
+        
 
         stage('CD') {
             steps {
