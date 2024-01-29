@@ -42,7 +42,7 @@ pipeline {
                     snykTokenId: 'snyk-api-toke',
                     failOnIssues: false,
                     monitorProjectOnBuild: true,
-                    additionalArguments: '--container hazemhashem100/vistor:${BUILD_NUMBER} -debug'
+                    additionalArguments: '--container hazemhashem100/vistor:v${BUILD_NUMBER} -debug'
                 )
             }
         }
