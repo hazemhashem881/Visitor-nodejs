@@ -4,8 +4,6 @@ metadata:
   name: web-service
   namespace: prod
   namespace: jenkins
-  annotations: 
-     service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
   type: LoadBalancer
   #type: NodePort
