@@ -3,7 +3,6 @@ kind: Service
 metadata:
   name: web-service
   namespace: prod
-  namespace: jenkins
 spec:
   type: LoadBalancer
   #type: NodePort
