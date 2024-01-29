@@ -16,7 +16,7 @@ pipeline {
         stage('Build & Push image') {
             steps {
                 script {
-                    sh "sed -i 's/latest/${BUILD_NUMBER}/' kaniko.yaml"
+                    sh "sed -i 's/latest/v${BUILD_NUMBER}/' kaniko.yaml"
                     sh "kubectl apply -f kaniko.yaml"
                 }
             }
@@ -50,7 +50,7 @@ pipeline {
 
         stage('CD') {
             steps {
-                sh "sed -i 's/latest/${BUILD_NUMBER}/' appdeploy.yml "
+                sh "sed -i 's/latest/v${BUILD_NUMBER}/' appdeploy.yml "
                 sh "kubectl apply -f namespace.yml"
                 sh "kubectl apply -f appdeploy.yml"
             }
