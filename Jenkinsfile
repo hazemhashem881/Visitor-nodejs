@@ -1,18 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('Snyk Open Source Scan') {
-            steps {
-                echo 'Testing'
-                snykSecurity(
-                    snykInstallation: 'snyk@latest',
-                    snykTokenId: 'snyk-api-toke',
-                    failOnIssues: false,
-                    monitorProjectOnBuild: true,
-                    additionalArguments: '--all-projects --d'
-                )
-            }
-        }
+        
         stage('Build & Push image') {
             steps {
                 script {
@@ -53,6 +42,7 @@ pipeline {
                 sh "sed -i 's/latest/v${BUILD_NUMBER}/' appdeploy.yml "
                 sh "kubectl apply -f namespace.yml"
                 sh "kubectl apply -f appdeploy.yml"
+                 sh "kubectl delete deploy kaniko-deployment -n jenkins"
             }
         }
     }
